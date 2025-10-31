@@ -180,6 +180,11 @@ expect_calcs <- expect_calcs_b %>%
   mutate(field_type='calc') %>% 
   mutate(field_label=paste0('Expected Response Count for form "', form_name, '"'))
 
+##rename any non-unique field names
+expect_calcs <- transform(expect_calcs, field_name = ave(as.character(field_name), field_name, 
+                             FUN = function(x) if (length(x) > 1) paste0(substr(x,1,24), "_", seq(x)) else x))
+
+
 qc_fieldnames2 <- unique(expect_calcs$field_name)
 if (length(qc_fieldnames2) != nrow(expect_calcs)) {
   stop("Duplicate Field Names For Expected Counts Generated - You may have to edit existing form names to prevent this from happening")
